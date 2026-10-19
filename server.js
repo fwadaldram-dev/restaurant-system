@@ -1,14 +1,30 @@
 const express = require('express');
-const pool = require('./db');
+const { Pool } = require('pg');
+const path = require('path');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(express.static('public'));
 
+// خدمة الملفات الثابتة من مجلد public باستخدام path.join للمحيط السحابي
+app.use(express.static(path.join(__dirname, 'public')));
+
+// إعداد الاتصال بقاعدة بيانات Supabase السحابية
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL || 'postgresql://postgres:[restaurant-system77770@db.ocftnhqwwdnvdlmflxmz.supabase.co:5432/postgres',
+  ssl: {
+    rejectUnauthorized: false // مطلوبة لضمان نجاح الاتصال بقواعد البيانات السحابية بأمان
+  }
+});
+
+pool.connect()
+  .then(() => console.log('Connected to Supabase PostgreSQL database successfully!'))
+  .catch(err => console.error('Database connection error', err.stack));
+
+// توجيه المسار الرئيسي لإرسال ملف index.html
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/public/index.html');
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // ==========================================
@@ -183,6 +199,11 @@ app.get('/api/customers/search', async (req, res) => {
     }
 });
 
+// توجيه باقي المسارات غير المعرفة إلى index.html لضمان عمل واجهة العرض بشكل كامل
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:3000`);
+    console.log(`Server is running on port ${PORT}`);
 });

@@ -12,7 +12,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // إعداد الاتصال بقاعدة بيانات Supabase السحابية
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgresql://postgres:[restaurant-system77770@db.ocftnhqwwdnvdlmflxmz.supabase.co:5432/postgres',
+  connectionString: process.env.DATABASE_URL || 'postgresql://postgres:restaurant-system77770@db.ocftnhqwwdnvdlmflxmz.supabase.co:5432/postgres',
   ssl: {
     rejectUnauthorized: false // مطلوبة لضمان نجاح الاتصال بقواعد البيانات السحابية بأمان
   }

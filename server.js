@@ -196,8 +196,8 @@ app.get('/api/customers/search', async (req, res) => {
 });
 
 // توجيه باقي المسارات إلى index.html
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+ {
+    app.get(/(.*)/, (req, res) => {res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // التشغيل محلياً فقط وتصدير التطبيق لـ Vercel
@@ -207,4 +207,4 @@ if (require.main === module) {
     });
 }
 
-module.exports = app;
+module.exports = app;}

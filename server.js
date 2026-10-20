@@ -7,20 +7,16 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-// خدمة الملفات الثابتة من مجلد public باستخدام path.join للمحيط السحابي
+// خدمة الملفات الثابتة من مجلد public
 app.use(express.static(path.join(__dirname, 'public')));
 
 // إعداد الاتصال بقاعدة بيانات Supabase السحابية
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || 'postgresql://postgres:restaurant-system77770@db.ocftnhqwwdnvdlmflxmz.supabase.co:5432/postgres',
   ssl: {
-    rejectUnauthorized: false // مطلوبة لضمان نجاح الاتصال بقواعد البيانات السحابية بأمان
+    rejectUnauthorized: false
   }
 });
-
-pool.connect()
-  .then(() => console.log('Connected to Supabase PostgreSQL database successfully!'))
-  .catch(err => console.error('Database connection error', err.stack));
 
 // توجيه المسار الرئيسي لإرسال ملف index.html
 app.get('/', (req, res) => {
@@ -199,11 +195,16 @@ app.get('/api/customers/search', async (req, res) => {
     }
 });
 
-// توجيه باقي المسارات غير المعرفة إلى index.html لضمان عمل واجهة العرض بشكل كامل
+// توجيه باقي المسارات إلى index.html
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+// التشغيل محلياً فقط وتصدير التطبيق لـ Vercel
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+}
+
+module.exports = app;

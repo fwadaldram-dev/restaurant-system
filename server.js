@@ -200,7 +200,7 @@ app.get('/api/customers/search', async (req, res) => {
 });
 
 // توجيه باقي المسارات غير المعرفة إلى index.html لضمان عمل واجهة العرض بشكل كامل
-app.get('*', (req, res) => {
+app.get('(.*)', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
